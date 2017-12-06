@@ -88,7 +88,7 @@ def main_menu():
     screen.fill(BLACK)
     draw_text(screen, "GET READY!", 40, WIDTH/2, HEIGHT/2)
     pygame.display.update()
-    
+
 
 def draw_text(surf, text, size, x, y):
     ## selecting a cross platform font to display the score
@@ -171,6 +171,7 @@ class Player(pygame.sprite.Sprite):
         self.hide_timer = pygame.time.get_ticks()
         self.power = 1
         self.power_timer = pygame.time.get_ticks()
+        background1_rect.top = -600
 
     def update(self):
         ## time out for powerups
@@ -187,13 +188,17 @@ class Player(pygame.sprite.Sprite):
         self.speedx = 0     ## makes the player static in the screen by default. 
         # then we have to check whether there is an event hanlding being done for the arrow keys being 
         ## pressed 
-
+        self.speedy = 0  
         ## will give back a list of the keys which happen to be pressed down at that moment
-        keystate = pygame.key.get_pressed()     
+        keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT]:
             self.speedx = -5
         elif keystate[pygame.K_RIGHT]:
             self.speedx = 5
+        elif keystate[pygame.K_UP]:
+            self.speedy= -5
+        elif keystate[pygame.K_DOWN]:
+            self.speedy= 5
 
         #Fire weapons by holding spacebar
         if keystate[pygame.K_SPACE]:
@@ -204,8 +209,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.right = WIDTH
         if self.rect.left < 0:
             self.rect.left = 0
-
+        if self.rect.top < 0:
+            self.rect.top = 0 
+        if self.rect.top > 560:
+            self.rect.top = 560 
         self.rect.x += self.speedx
+        self.rect.y += self.speedy
 
     def shoot(self):
         ## to tell the bullet where to spawn
@@ -249,7 +258,6 @@ class Player(pygame.sprite.Sprite):
         self.hide_timer = pygame.time.get_ticks()
         self.rect.center = (WIDTH / 2, HEIGHT + 200)
 
-
 # defines the enemies
 class Mob(pygame.sprite.Sprite):
     def __init__(self):
@@ -270,7 +278,7 @@ class Mob(pygame.sprite.Sprite):
         self.rotation = 0
         self.rotation_speed = random.randrange(-8, 8)
         self.last_update = pygame.time.get_ticks()  ## time when the rotation has to happen
-        
+
     def rotate(self):
         time_now = pygame.time.get_ticks()
         if time_now - self.last_update > 50: # in milliseconds
@@ -292,6 +300,14 @@ class Mob(pygame.sprite.Sprite):
             self.rect.x = random.randrange(0, WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100, -40)
             self.speedy = random.randrange(1, 8)        ## for randomizing the speed of the Mob
+        background_rect.top += 1
+        if (background_rect.top == 600):
+            background_rect.top = -600
+
+        background1_rect.top += 1
+        if (background1_rect.top == 600):
+            background1_rect.top = -600
+
 
 ## defines the sprite for Powerups
 class Pow(pygame.sprite.Sprite):
@@ -312,7 +328,7 @@ class Pow(pygame.sprite.Sprite):
         if self.rect.top > HEIGHT:
             self.kill()
 
-            
+
 
 ## defines the sprite for bullets
 class Bullet(pygame.sprite.Sprite):
@@ -359,7 +375,9 @@ class Missile(pygame.sprite.Sprite):
 ## Load all game images
 
 background = pygame.image.load(path.join(img_dir, 'starfield.png')).convert()
+background1 = pygame.image.load(path.join(img_dir, 'starfield.png')).convert()
 background_rect = background.get_rect()
+background1_rect = background1.get_rect()
 ## ^^ draw this rect first 
 
 player_img = pygame.image.load(path.join(img_dir, 'playerShip1_orange.png')).convert()
@@ -445,9 +463,9 @@ while running:
         #Play the gameplay music
         pygame.mixer.music.load(path.join(sound_folder, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
         pygame.mixer.music.play(-1)     ## makes the gameplay sound in an endless loop
-        
+
         menu_display = False
-        
+
         ## group all the sprites together for ease of update
         all_sprites = pygame.sprite.Group()
         player = Player()
@@ -467,7 +485,7 @@ while running:
 
         #### Score board variable
         score = 0
-        
+
     #1 Process input/events
     clock.tick(FPS)     ## will make the loop run at the same speed all the time
     for event in pygame.event.get():        # gets all the events which have occured till now and keeps tab of them.
@@ -546,6 +564,7 @@ while running:
     screen.fill(BLACK)
     ## draw the stargaze.png image
     screen.blit(background, background_rect)
+    screen.blit(background1, background1_rect)
 
     all_sprites.draw(screen)
     draw_text(screen, str(score), 18, WIDTH / 2, 10)     ## 10px down from the screen
