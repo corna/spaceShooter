@@ -79,9 +79,9 @@ def main_menu():
                 pygame.quit()
                 quit()
         else:
-            draw_text(screen, "Press [ENTER] To Begin", 30, WIDTH/2, HEIGHT/2)
-            draw_text(screen, "or [P] To Pause", 30, WIDTH/2, (HEIGHT/2)+40)
-            draw_text(screen, "or [Q] To Quit", 30, WIDTH/2, (HEIGHT/2)+80)
+            draw_text(screen, "Press [ENTER] To Begin", 30, WIDTH//2, HEIGHT//2)
+            draw_text(screen, "or [P] To Pause", 30, WIDTH//2, (HEIGHT//2)+40)
+            draw_text(screen, "or [Q] To Quit", 30, WIDTH//2, (HEIGHT//2)+80)
 
             pygame.display.update()
 
@@ -89,7 +89,7 @@ def main_menu():
     ready = pygame.mixer.Sound(path.join(sound_folder,'getready.ogg'))
     ready.play()
     screen.fill(BLACK)
-    draw_text(screen, "GET READY!", 40, WIDTH/2, HEIGHT/2)
+    draw_text(screen, "GET READY!", 40, WIDTH//2, HEIGHT//2)
     pygame.display.update()
 
 
@@ -109,7 +109,7 @@ def draw_shield_bar(surf, x, y, pct):
     ## moving them to top
     # BAR_LENGTH = 100
     # BAR_HEIGHT = 10
-    fill = (pct / 100) * BAR_LENGTH
+    fill = round((pct / 100) * BAR_LENGTH)
     outline_rect = pygame.Rect(x, y, BAR_LENGTH, BAR_HEIGHT)
     fill_rect = pygame.Rect(x, y, fill, BAR_HEIGHT)
     pygame.draw.rect(surf, GREEN, fill_rect)
@@ -163,7 +163,7 @@ class Player(pygame.sprite.Sprite):
         self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
         self.radius = 20
-        self.rect.centerx = WIDTH / 2
+        self.rect.centerx = WIDTH // 2
         self.rect.bottom = HEIGHT - 10
         self.speedx = 0
         self.shield = 100
@@ -185,7 +185,7 @@ class Player(pygame.sprite.Sprite):
         ## unhide
         if self.hidden and pygame.time.get_ticks() - self.hide_timer > 1000:
             self.hidden = False
-            self.rect.centerx = WIDTH / 2
+            self.rect.centerx = WIDTH // 2
             self.rect.bottom = HEIGHT - 30
 
         self.speedx = 0     ## makes the player static in the screen by default.
@@ -234,8 +234,8 @@ class Player(pygame.sprite.Sprite):
                     quit()
 
             screen.fill(ALPHA_BLACK)
-            draw_text(screen, "Paused", 30, WIDTH/2, HEIGHT/2 - 70)
-            draw_text(screen, "Press [C] to contiune and [Q] to exit!", 20, WIDTH/2, HEIGHT/2 + 10)
+            draw_text(screen, "Paused", 30, WIDTH//2, HEIGHT//2 - 70)
+            draw_text(screen, "Press [C] to contiune and [Q] to exit!", 20, WIDTH//2, HEIGHT//2 + 10)
             pygame.display.update()
 
     def shoot(self):
@@ -303,7 +303,7 @@ class Player(pygame.sprite.Sprite):
     def hide(self):
         self.hidden = True
         self.hide_timer = pygame.time.get_ticks()
-        self.rect.center = (WIDTH / 2, HEIGHT + 200)
+        self.rect.center = (WIDTH // 2, HEIGHT + 200)
 
 # defines the enemies
 class Mob(pygame.sprite.Sprite):
@@ -614,7 +614,7 @@ while running:
     screen.blit(background1, background1_rect)
 
     all_sprites.draw(screen)
-    draw_text(screen, str(score), 18, WIDTH / 2, 10)     ## 10px down from the screen
+    draw_text(screen, str(score), 18, WIDTH // 2, 10)     ## 10px down from the screen
     draw_shield_bar(screen, 5, 5, player.shield)
 
     # Draw lives
