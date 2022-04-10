@@ -20,6 +20,11 @@ import pygame
 import random
 from os import path
 
+import jstk2
+
+## Joystick object
+joystick = jstk2.jstk2('/dev/ttyUSB1', 115200)
+
 ## assets folder
 img_dir = path.join(path.dirname(__file__), 'assets')
 sound_folder = path.join(path.dirname(__file__), 'sounds')
@@ -203,11 +208,16 @@ class Player(pygame.sprite.Sprite):
         if keystate[pygame.K_DOWN]:
             self.speedy= 5
 
+        # Get the joystick position and change the speed
+        joystick_inputs = joystick.get_jstk()
+        self.speedx += round((joystick_inputs[0][0] - 16) * 5 / 16)
+        self.speedy += round(-(joystick_inputs[0][1] - 16) * 5 / 16)
+
         #Fire weapons by holding spacebar
-        if keystate[pygame.K_SPACE]:
+        if keystate[pygame.K_SPACE] or joystick_inputs[1]:
             self.shoot()
 
-        if keystate[pygame.K_p]:
+        if keystate[pygame.K_p] or joystick_inputs[2]:
             self.pause()
 
         ## check for the borders at the left and right
@@ -601,6 +611,14 @@ while running:
         if hit.type == 'gun':
             player.powerup()
 
+    # Update the LED
+    if player.shield <= 33:
+        joystick.set_leds((255, 0, 0))
+    elif player.shield <= 66:
+        joystick.set_leds((255, 255, 0))
+    else:
+        joystick.set_leds((0, 0, 255))
+
     ## if player died and the explosion has finished, end game
     if player.lives == 0 and not death_explosion.alive():
         running = False
@@ -623,4 +641,6 @@ while running:
     ## Done after drawing everything to the screen
     pygame.display.flip()
 
+joystick.set_leds((0, 0, 0))
 pygame.quit()
+joystick.close()
