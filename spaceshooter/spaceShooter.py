@@ -63,7 +63,7 @@ font_name = pygame.font.match_font('arial')
 def main_menu():
     global screen
 
-    menu_song = pygame.mixer.music.load(path.join(sound_folder, "menu.ogg"))
+    menu_song = pygame.mixer.music.load(path.join(sound_folder, "menu.wav"))
     pygame.mixer.music.play(-1)
 
     title = pygame.image.load(path.join(img_dir, "main.png")).convert()
@@ -91,7 +91,7 @@ def main_menu():
             pygame.display.update()
 
     #pygame.mixer.music.stop()
-    ready = pygame.mixer.Sound(path.join(sound_folder,'getready.ogg'))
+    ready = pygame.mixer.Sound(path.join(sound_folder,'getready.wav'))
     ready.play()
     screen.fill(BLACK)
     draw_text(screen, "GET READY!", 40, WIDTH//2, HEIGHT//2)
@@ -490,15 +490,15 @@ powerup_images['gun'] = pygame.image.load(path.join(img_dir, 'bolt_gold.png')).c
 ###################################################
 ### Load all game sounds
 shooting_sound = pygame.mixer.Sound(path.join(sound_folder, 'pew.wav'))
-missile_sound = pygame.mixer.Sound(path.join(sound_folder, 'rocket.ogg'))
+missile_sound = pygame.mixer.Sound(path.join(sound_folder, 'rocket.wav'))
 expl_sounds = []
 for sound in ['expl3.wav', 'expl6.wav']:
     expl_sounds.append(pygame.mixer.Sound(path.join(sound_folder, sound)))
 ## main background music
-#pygame.mixer.music.load(path.join(sound_folder, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
+#pygame.mixer.music.load(path.join(sound_folder, 'tgfcoder-FrozenJam-SeamlessLoop.wav'))
 pygame.mixer.music.set_volume(0.2)      ## simmered the sound down a little
 
-player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.ogg'))
+player_die_sound = pygame.mixer.Sound(path.join(sound_folder, 'rumble1.wav'))
 ###################################################
 
 ## TODO: make the game music loop over again and again. play(loops=-1) is not working
@@ -518,7 +518,7 @@ while running:
         #Stop menu music
         pygame.mixer.music.stop()
         #Play the gameplay music
-        pygame.mixer.music.load(path.join(sound_folder, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
+        pygame.mixer.music.load(path.join(sound_folder, 'tgfcoder-FrozenJam-SeamlessLoop.wav'))
         pygame.mixer.music.play(-1)     ## makes the gameplay sound in an endless loop
 
         menu_display = False
